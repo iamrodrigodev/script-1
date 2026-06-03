@@ -1,8 +1,9 @@
 .venv/
 __pycache__/
 *.pyc
-input/generado/*
-!input/generado/.gitkeep
+input/*
+!input/.gitkeep
+!input/url_pagina_zips.py
 output/*
 !output/.gitkeep
 downloads/*

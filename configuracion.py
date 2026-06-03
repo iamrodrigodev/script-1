@@ -2,7 +2,6 @@ from pathlib import Path
 
 CARPETA_BASE = Path(__file__).resolve().parent
 CARPETA_ENTRADA = CARPETA_BASE / "input"
-CARPETA_ENTRADA_GENERADA = CARPETA_ENTRADA / "generado"
 CARPETA_DESCARGAS = CARPETA_BASE / "downloads"
 CARPETA_EXTRAIDOS = CARPETA_BASE / "extracted"
 CARPETA_SALIDA = CARPETA_BASE / "output"
@@ -25,7 +24,7 @@ AGENTE_USUARIO = "Mozilla/5.0"
 
 
 def obtener_ruta_excel_entrada(carpeta_origen):
-    return CARPETA_ENTRADA_GENERADA / carpeta_origen / "zips.xlsx"
+    return CARPETA_ENTRADA / carpeta_origen / "zips.xlsx"
 
 
 def obtener_ruta_bitacora(carpeta_origen):
