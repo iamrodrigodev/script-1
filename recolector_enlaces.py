@@ -24,7 +24,6 @@ def crear_fuentes_desde_url(url):
 
 
 def ejecutar():
-    # La URL se configura en configuracion.py para no escribirla por consola.
     if not URL_PAGINA_ZIPS:
         print("Configura URL_PAGINA_ZIPS en configuracion.py.")
         return
