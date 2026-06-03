@@ -2,11 +2,12 @@ from pathlib import Path
 
 CARPETA_BASE = Path(__file__).resolve().parent
 CARPETA_ENTRADA = CARPETA_BASE / "input"
+CARPETA_ENTRADA_GENERADA = CARPETA_ENTRADA / "generado"
 CARPETA_DESCARGAS = CARPETA_BASE / "downloads"
 CARPETA_EXTRAIDOS = CARPETA_BASE / "extracted"
 CARPETA_SALIDA = CARPETA_BASE / "output"
 
-RUTA_EXCEL_ENTRADA = CARPETA_ENTRADA / "zips.xlsx"
+RUTA_EXCEL_ENTRADA = CARPETA_ENTRADA_GENERADA / "zips.xlsx"
 RUTA_BITACORA = CARPETA_SALIDA / "bitacora.xlsx"
 
 COLUMNAS_ENTRADA = ["pagina_origen", "nombre_zip", "url_zip"]

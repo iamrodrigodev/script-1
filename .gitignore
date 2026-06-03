@@ -1,7 +1,8 @@
 .venv/
 __pycache__/
 *.pyc
-input/zips.xlsx
+input/generado/*
+!input/generado/.gitkeep
 output/*.xlsx
 downloads/*
 !downloads/.gitkeep
