@@ -1,7 +1,6 @@
 from pathlib import Path
-from sys import argv
 
-from configuracion import RUTA_EXCEL_ENTRADA
+from configuracion import RUTA_EXCEL_ENTRADA, URL_PAGINA_ZIPS
 from descargador import obtener_enlaces_zip
 from gestor_excel import guardar_fuentes_excel
 
@@ -24,21 +23,13 @@ def crear_fuentes_desde_url(url):
     return fuentes
 
 
-def obtener_url_usuario():
-    if len(argv) > 1:
-        return argv[1]
-
-    return input("Ingresa la URL a raspar: ").strip()
-
-
 def ejecutar():
-    url = obtener_url_usuario()
-
-    if not url:
-        print("No se ingreso ninguna URL.")
+    # La URL se configura en configuracion.py para no escribirla por consola.
+    if not URL_PAGINA_ZIPS:
+        print("Configura URL_PAGINA_ZIPS en configuracion.py.")
         return
 
-    fuentes = crear_fuentes_desde_url(url)
+    fuentes = crear_fuentes_desde_url(URL_PAGINA_ZIPS)
     cantidad_guardada = guardar_fuentes_excel(RUTA_EXCEL_ENTRADA, fuentes)
     print(f"Se encontraron {len(fuentes)} enlaces zip.")
     print(f"Se agregaron {cantidad_guardada} enlaces nuevos al Excel: {RUTA_EXCEL_ENTRADA}")
