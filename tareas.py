@@ -5,7 +5,7 @@ from gestor_excel import (
     guardar_fuentes_excel,
     leer_fuentes_excel,
 )
-from input.url_pagina_zips import URL_PAGINA_ZIPS
+from input.url_pagina_zips import URLS_PAGINAS_ZIPS
 from procesador_zips import procesar_fuente
 from recolector_enlaces import crear_fuentes_desde_url
 from salida_consola import mostrar_linea, mostrar_mensaje, mostrar_tarea, mostrar_titulo
@@ -20,15 +20,27 @@ def tarea_preparar_excel():
 def tarea_recolectar_enlaces():
     mostrar_tarea(2, "Recolectar enlaces zip desde la pagina inicial")
 
-    if not URL_PAGINA_ZIPS:
-        mostrar_mensaje("No hay URL configurada para recolectar enlaces.")
+    if not URLS_PAGINAS_ZIPS:
+        mostrar_mensaje("No hay URLs configuradas para recolectar enlaces.")
         return
 
-    mostrar_linea("URL pagina zips", URL_PAGINA_ZIPS)
-    fuentes_recolectadas = crear_fuentes_desde_url(URL_PAGINA_ZIPS)
-    cantidad_guardada = guardar_fuentes_excel(RUTA_EXCEL_ENTRADA, fuentes_recolectadas)
-    mostrar_linea("Enlaces zip encontrados", len(fuentes_recolectadas))
-    mostrar_linea("Enlaces nuevos agregados al Excel", cantidad_guardada)
+    total_encontrados = 0
+    total_guardados = 0
+
+    for indice, url_pagina_zips in enumerate(URLS_PAGINAS_ZIPS, start=1):
+        mostrar_linea(f"URL pagina zips {indice}", url_pagina_zips)
+        fuentes_recolectadas = crear_fuentes_desde_url(url_pagina_zips)
+        cantidad_guardada = guardar_fuentes_excel(
+            RUTA_EXCEL_ENTRADA,
+            fuentes_recolectadas,
+        )
+        total_encontrados += len(fuentes_recolectadas)
+        total_guardados += cantidad_guardada
+        mostrar_linea("Enlaces encontrados en esta pagina", len(fuentes_recolectadas))
+        mostrar_linea("Enlaces nuevos agregados", cantidad_guardada)
+
+    mostrar_linea("Total enlaces zip encontrados", total_encontrados)
+    mostrar_linea("Total enlaces nuevos agregados al Excel", total_guardados)
 
 
 def tarea_descargar_y_descomprimir():

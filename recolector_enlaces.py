@@ -3,7 +3,7 @@ from pathlib import Path
 from configuracion import RUTA_EXCEL_ENTRADA
 from descargador import obtener_enlaces_zip
 from gestor_excel import guardar_fuentes_excel
-from input.url_pagina_zips import URL_PAGINA_ZIPS
+from input.url_pagina_zips import URLS_PAGINAS_ZIPS
 
 
 def obtener_nombre_desde_url(url):
@@ -26,14 +26,21 @@ def crear_fuentes_desde_url(url):
 
 
 def ejecutar():
-    if not URL_PAGINA_ZIPS:
-        print("Configura URL_PAGINA_ZIPS en configuracion.py.")
+    if not URLS_PAGINAS_ZIPS:
+        print("Configura URLS_PAGINAS_ZIPS en input/url_pagina_zips.py.")
         return
 
-    fuentes = crear_fuentes_desde_url(URL_PAGINA_ZIPS)
-    cantidad_guardada = guardar_fuentes_excel(RUTA_EXCEL_ENTRADA, fuentes)
-    print(f"Se encontraron {len(fuentes)} enlaces zip.")
-    print(f"Se agregaron {cantidad_guardada} enlaces nuevos al Excel: {RUTA_EXCEL_ENTRADA}")
+    total_encontrados = 0
+    total_guardados = 0
+
+    for url_pagina_zips in URLS_PAGINAS_ZIPS:
+        fuentes = crear_fuentes_desde_url(url_pagina_zips)
+        cantidad_guardada = guardar_fuentes_excel(RUTA_EXCEL_ENTRADA, fuentes)
+        total_encontrados += len(fuentes)
+        total_guardados += cantidad_guardada
+
+    print(f"Se encontraron {total_encontrados} enlaces zip.")
+    print(f"Se agregaron {total_guardados} enlaces nuevos al Excel: {RUTA_EXCEL_ENTRADA}")
 
 
 if __name__ == "__main__":

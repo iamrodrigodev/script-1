@@ -1,1 +1,3 @@
-URL_PAGINA_ZIPS = "https://samplelib.com/es/sample-zip.html"
+URLS_PAGINAS_ZIPS = [
+    "https://samplelib.com/es/sample-zip.html",
+]
