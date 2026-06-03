@@ -1,6 +1,5 @@
 from pathlib import Path
 
-
 CARPETA_BASE = Path(__file__).resolve().parent
 CARPETA_ENTRADA = CARPETA_BASE / "input"
 CARPETA_DESCARGAS = CARPETA_BASE / "downloads"
