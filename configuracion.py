@@ -11,16 +11,16 @@ RUTA_BITACORA = CARPETA_SALIDA / "bitacora.xlsx"
 
 URL_PAGINA_ZIPS = "https://samplelib.com/es/sample-zip.html"
 
-COLUMNAS_ENTRADA = ["nombre", "url"]
+COLUMNAS_ENTRADA = ["pagina_origen", "nombre_zip", "url_zip"]
 COLUMNAS_BITACORA = [
     "fecha_hora",
-    "nombre",
-    "origen",
+    "pagina_origen",
+    "nombre_zip",
     "url_zip",
-    "archivo_zip",
+    "ruta_zip_descargado",
     "estado_descarga",
+    "ruta_descompresion",
     "estado_descompresion",
-    "carpeta_extraida",
     "detalle",
 ]
 

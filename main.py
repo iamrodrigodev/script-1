@@ -12,13 +12,13 @@ from recolector_enlaces import crear_fuentes_desde_url
 
 def crear_registro_base(fuente, url_zip=""):
     return {
-        "nombre": fuente["nombre"],
-        "origen": fuente["url"],
-        "url_zip": url_zip,
-        "archivo_zip": "",
+        "pagina_origen": fuente["pagina_origen"] or fuente["url_zip"],
+        "nombre_zip": fuente["nombre_zip"],
+        "url_zip": url_zip or fuente["url_zip"],
+        "ruta_zip_descargado": "",
         "estado_descarga": "pendiente",
+        "ruta_descompresion": "",
         "estado_descompresion": "pendiente",
-        "carpeta_extraida": "",
         "detalle": "",
     }
 
@@ -39,10 +39,10 @@ def crear_registro_sin_zips(fuente):
 
 def procesar_fuente(fuente):
     registros = []
-    print(f"Procesando fuente: {fuente['nombre'] or fuente['url']}")
+    print(f"Procesando fuente: {fuente['nombre_zip'] or fuente['url_zip']}")
 
     try:
-        enlaces_zip = obtener_enlaces_zip(fuente["url"])
+        enlaces_zip = obtener_enlaces_zip(fuente["url_zip"])
     except Exception as error:
         print(f"Error al obtener enlaces: {error}")
         return [crear_registro_error(fuente, str(error))]
@@ -57,7 +57,7 @@ def procesar_fuente(fuente):
         print(f"Descargando: {url_zip}")
         registro = crear_registro_base(fuente, url_zip)
         resultado_descarga = descargar_archivo_zip(url_zip)
-        registro["archivo_zip"] = str(resultado_descarga["ruta_archivo"])
+        registro["ruta_zip_descargado"] = str(resultado_descarga["ruta_archivo"])
         registro["estado_descarga"] = resultado_descarga["estado"]
         registro["detalle"] = resultado_descarga["detalle"]
 
@@ -65,7 +65,7 @@ def procesar_fuente(fuente):
             print(f"Descomprimiendo: {resultado_descarga['ruta_archivo']}")
             resultado_descompresion = descomprimir_zip(resultado_descarga["ruta_archivo"])
             registro["estado_descompresion"] = resultado_descompresion["estado"]
-            registro["carpeta_extraida"] = str(resultado_descompresion["carpeta"])
+            registro["ruta_descompresion"] = str(resultado_descompresion["carpeta"])
             registro["detalle"] = resultado_descompresion["detalle"]
 
         print(

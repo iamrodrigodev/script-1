@@ -16,8 +16,9 @@ def crear_fuentes_desde_url(url):
 
     for enlace_zip in enlaces_zip:
         fuentes.append({
-            "nombre": obtener_nombre_desde_url(enlace_zip),
-            "url": enlace_zip,
+            "pagina_origen": url,
+            "nombre_zip": obtener_nombre_desde_url(enlace_zip),
+            "url_zip": enlace_zip,
         })
 
     return fuentes
