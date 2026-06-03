@@ -9,28 +9,7 @@ from gestor_excel import (
 )
 from input.url_pagina_zips import URL_PAGINA_ZIPS
 from recolector_enlaces import crear_fuentes_desde_url
-
-
-def mostrar_titulo(texto):
-    print("")
-    print("=" * 70)
-    print(texto.upper())
-    print("=" * 70)
-
-
-def mostrar_tarea(numero, texto):
-    print("")
-    print("-" * 70)
-    print(f"TAREA {numero}: {texto}")
-    print("-" * 70)
-
-
-def mostrar_linea(etiqueta, valor):
-    print(f"{etiqueta}: {valor}")
-
-
-def mostrar_mensaje(texto):
-    print(f"- {texto}")
+from salida_consola import mostrar_linea, mostrar_mensaje, mostrar_tarea, mostrar_titulo
 
 
 def crear_registro_base(fuente, url_zip=""):
