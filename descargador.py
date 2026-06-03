@@ -5,6 +5,7 @@ from urllib.request import Request, urlopen
 
 from configuracion import AGENTE_USUARIO, CARPETA_DESCARGAS, TIEMPO_ESPERA_SEGUNDOS
 
+
 class LectorEnlacesZip(HTMLParser):
     def __init__(self, url_base):
         super().__init__()
