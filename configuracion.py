@@ -7,9 +7,6 @@ CARPETA_DESCARGAS = CARPETA_BASE / "downloads"
 CARPETA_EXTRAIDOS = CARPETA_BASE / "extracted"
 CARPETA_SALIDA = CARPETA_BASE / "output"
 
-RUTA_EXCEL_ENTRADA = CARPETA_ENTRADA_GENERADA / "zips.xlsx"
-RUTA_BITACORA = CARPETA_SALIDA / "bitacora.xlsx"
-
 COLUMNAS_ENTRADA = ["pagina_origen", "nombre_zip", "url_zip"]
 COLUMNAS_BITACORA = [
     "fecha_hora",
@@ -25,3 +22,11 @@ COLUMNAS_BITACORA = [
 
 TIEMPO_ESPERA_SEGUNDOS = 30
 AGENTE_USUARIO = "Mozilla/5.0"
+
+
+def obtener_ruta_excel_entrada(carpeta_origen):
+    return CARPETA_ENTRADA_GENERADA / carpeta_origen / "zips.xlsx"
+
+
+def obtener_ruta_bitacora(carpeta_origen):
+    return CARPETA_SALIDA / carpeta_origen / "bitacora.xlsx"

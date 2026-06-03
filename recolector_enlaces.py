@@ -1,9 +1,10 @@
 from pathlib import Path
 
-from configuracion import RUTA_EXCEL_ENTRADA
+from configuracion import obtener_ruta_excel_entrada
 from descargador import obtener_enlaces_zip
 from gestor_excel import guardar_fuentes_excel
 from input.url_pagina_zips import URLS_PAGINAS_ZIPS
+from nombres_carpetas import crear_nombre_carpeta_desde_url
 
 
 def obtener_nombre_desde_url(url):
@@ -34,13 +35,15 @@ def ejecutar():
     total_guardados = 0
 
     for url_pagina_zips in URLS_PAGINAS_ZIPS:
+        carpeta_origen = crear_nombre_carpeta_desde_url(url_pagina_zips)
+        ruta_excel = obtener_ruta_excel_entrada(carpeta_origen)
         fuentes = crear_fuentes_desde_url(url_pagina_zips)
-        cantidad_guardada = guardar_fuentes_excel(RUTA_EXCEL_ENTRADA, fuentes)
+        cantidad_guardada = guardar_fuentes_excel(ruta_excel, fuentes)
         total_encontrados += len(fuentes)
         total_guardados += cantidad_guardada
 
     print(f"Se encontraron {total_encontrados} enlaces zip.")
-    print(f"Se agregaron {total_guardados} enlaces nuevos al Excel: {RUTA_EXCEL_ENTRADA}")
+    print(f"Se agregaron {total_guardados} enlaces nuevos.")
 
 
 if __name__ == "__main__":

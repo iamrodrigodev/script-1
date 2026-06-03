@@ -1,4 +1,4 @@
-from configuracion import RUTA_BITACORA, RUTA_EXCEL_ENTRADA
+from configuracion import obtener_ruta_bitacora, obtener_ruta_excel_entrada
 from gestor_excel import (
     crear_excel_entrada_si_no_existe,
     guardar_bitacora,
@@ -6,46 +6,31 @@ from gestor_excel import (
     leer_fuentes_excel,
 )
 from input.url_pagina_zips import URLS_PAGINAS_ZIPS
+from nombres_carpetas import crear_nombre_carpeta_desde_url
 from procesador_zips import procesar_fuente
 from recolector_enlaces import crear_fuentes_desde_url
 from salida_consola import mostrar_linea, mostrar_mensaje, mostrar_tarea, mostrar_titulo
 
 
-def tarea_preparar_excel():
+def tarea_preparar_excel(ruta_excel):
     mostrar_tarea(1, "Preparar Excel de entrada")
-    crear_excel_entrada_si_no_existe(RUTA_EXCEL_ENTRADA)
-    mostrar_linea("Excel generado/acumulado", RUTA_EXCEL_ENTRADA)
+    crear_excel_entrada_si_no_existe(ruta_excel)
+    mostrar_linea("Excel generado/acumulado", ruta_excel)
 
 
-def tarea_recolectar_enlaces():
+def tarea_recolectar_enlaces(url_pagina_zips, ruta_excel):
     mostrar_tarea(2, "Recolectar enlaces zip desde la pagina inicial")
+    mostrar_linea("URL pagina zips", url_pagina_zips)
 
-    if not URLS_PAGINAS_ZIPS:
-        mostrar_mensaje("No hay URLs configuradas para recolectar enlaces.")
-        return
-
-    total_encontrados = 0
-    total_guardados = 0
-
-    for indice, url_pagina_zips in enumerate(URLS_PAGINAS_ZIPS, start=1):
-        mostrar_linea(f"URL pagina zips {indice}", url_pagina_zips)
-        fuentes_recolectadas = crear_fuentes_desde_url(url_pagina_zips)
-        cantidad_guardada = guardar_fuentes_excel(
-            RUTA_EXCEL_ENTRADA,
-            fuentes_recolectadas,
-        )
-        total_encontrados += len(fuentes_recolectadas)
-        total_guardados += cantidad_guardada
-        mostrar_linea("Enlaces encontrados en esta pagina", len(fuentes_recolectadas))
-        mostrar_linea("Enlaces nuevos agregados", cantidad_guardada)
-
-    mostrar_linea("Total enlaces zip encontrados", total_encontrados)
-    mostrar_linea("Total enlaces nuevos agregados al Excel", total_guardados)
+    fuentes_recolectadas = crear_fuentes_desde_url(url_pagina_zips)
+    cantidad_guardada = guardar_fuentes_excel(ruta_excel, fuentes_recolectadas)
+    mostrar_linea("Enlaces encontrados en esta pagina", len(fuentes_recolectadas))
+    mostrar_linea("Enlaces nuevos agregados", cantidad_guardada)
 
 
-def tarea_descargar_y_descomprimir():
+def tarea_descargar_y_descomprimir(ruta_excel):
     mostrar_tarea(3, "Descargar y descomprimir zips")
-    fuentes = leer_fuentes_excel(RUTA_EXCEL_ENTRADA)
+    fuentes = leer_fuentes_excel(ruta_excel)
     bitacora = []
     mostrar_linea("Fuentes cargadas desde Excel", len(fuentes))
 
@@ -55,7 +40,7 @@ def tarea_descargar_y_descomprimir():
     return bitacora
 
 
-def tarea_guardar_bitacora(bitacora):
+def tarea_guardar_bitacora(bitacora, ruta_bitacora):
     mostrar_tarea(4, "Guardar bitacora final")
     descargados = sum(
         1 for registro in bitacora if registro["estado_descarga"] == "descargado"
@@ -64,17 +49,35 @@ def tarea_guardar_bitacora(bitacora):
         1 for registro in bitacora if registro["estado_descompresion"] == "descomprimido"
     )
 
-    guardar_bitacora(RUTA_BITACORA, bitacora)
+    guardar_bitacora(ruta_bitacora, bitacora)
     mostrar_linea("Registros procesados", len(bitacora))
     mostrar_linea("Archivos descargados", descargados)
     mostrar_linea("Archivos descomprimidos", descomprimidos)
-    mostrar_linea("Bitacora generada", RUTA_BITACORA)
+    mostrar_linea("Bitacora generada", ruta_bitacora)
+
+
+def ejecutar_tareas_por_url(indice, url_pagina_zips):
+    carpeta_origen = crear_nombre_carpeta_desde_url(url_pagina_zips)
+    ruta_excel = obtener_ruta_excel_entrada(carpeta_origen)
+    ruta_bitacora = obtener_ruta_bitacora(carpeta_origen)
+
+    mostrar_titulo(f"URL {indice}: {carpeta_origen}")
+    mostrar_linea("Pagina origen", url_pagina_zips)
+    mostrar_linea("Carpeta de trabajo", carpeta_origen)
+    tarea_preparar_excel(ruta_excel)
+    tarea_recolectar_enlaces(url_pagina_zips, ruta_excel)
+    bitacora = tarea_descargar_y_descomprimir(ruta_excel)
+    tarea_guardar_bitacora(bitacora, ruta_bitacora)
 
 
 def ejecutar_tareas():
     mostrar_titulo("Proceso automatico de descarga y descompresion de zips")
-    tarea_preparar_excel()
-    tarea_recolectar_enlaces()
-    bitacora = tarea_descargar_y_descomprimir()
-    tarea_guardar_bitacora(bitacora)
+
+    if not URLS_PAGINAS_ZIPS:
+        mostrar_mensaje("No hay URLs configuradas para recolectar enlaces.")
+        return
+
+    for indice, url_pagina_zips in enumerate(URLS_PAGINAS_ZIPS, start=1):
+        ejecutar_tareas_por_url(indice, url_pagina_zips)
+
     mostrar_titulo("Proceso terminado")

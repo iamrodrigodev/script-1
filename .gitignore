@@ -3,7 +3,8 @@ __pycache__/
 *.pyc
 input/generado/*
 !input/generado/.gitkeep
-output/*.xlsx
+output/*
+!output/.gitkeep
 downloads/*
 !downloads/.gitkeep
 extracted/*
