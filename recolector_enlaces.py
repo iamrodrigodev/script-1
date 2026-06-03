@@ -1,8 +1,9 @@
 from pathlib import Path
 
-from configuracion import RUTA_EXCEL_ENTRADA, URL_PAGINA_ZIPS
+from configuracion import RUTA_EXCEL_ENTRADA
 from descargador import obtener_enlaces_zip
 from gestor_excel import guardar_fuentes_excel
+from input.url_pagina_zips import URL_PAGINA_ZIPS
 
 
 def obtener_nombre_desde_url(url):

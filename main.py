@@ -1,4 +1,4 @@
-from configuracion import RUTA_BITACORA, RUTA_EXCEL_ENTRADA, URL_PAGINA_ZIPS
+from configuracion import RUTA_BITACORA, RUTA_EXCEL_ENTRADA
 from descargador import descargar_archivo_zip, obtener_enlaces_zip
 from descompresor import descomprimir_zip
 from gestor_excel import (
@@ -7,6 +7,7 @@ from gestor_excel import (
     guardar_fuentes_excel,
     leer_fuentes_excel,
 )
+from input.url_pagina_zips import URL_PAGINA_ZIPS
 from recolector_enlaces import crear_fuentes_desde_url
 
 

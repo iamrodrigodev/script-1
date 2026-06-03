@@ -9,8 +9,6 @@ CARPETA_SALIDA = CARPETA_BASE / "output"
 RUTA_EXCEL_ENTRADA = CARPETA_ENTRADA / "zips.xlsx"
 RUTA_BITACORA = CARPETA_SALIDA / "bitacora.xlsx"
 
-URL_PAGINA_ZIPS = "https://samplelib.com/es/sample-zip.html"
-
 COLUMNAS_ENTRADA = ["pagina_origen", "nombre_zip", "url_zip"]
 COLUMNAS_BITACORA = [
     "fecha_hora",
