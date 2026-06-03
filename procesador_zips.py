@@ -1,5 +1,6 @@
 from descargador import descargar_archivo_zip, obtener_enlaces_zip
 from descompresor import descomprimir_zip
+from nombres_carpetas import crear_nombre_carpeta_desde_url
 from salida_consola import mostrar_linea, mostrar_mensaje
 
 
@@ -32,9 +33,13 @@ def crear_registro_sin_zips(fuente):
 
 def procesar_fuente(fuente):
     registros = []
+    carpeta_origen = crear_nombre_carpeta_desde_url(
+        fuente["pagina_origen"] or fuente["url_zip"],
+    )
     print("")
     mostrar_linea("Fuente", fuente["nombre_zip"] or fuente["url_zip"])
     mostrar_linea("Pagina origen", fuente["pagina_origen"] or "No registrada")
+    mostrar_linea("Carpeta origen", carpeta_origen)
     mostrar_linea("URL zip", fuente["url_zip"])
 
     try:
@@ -52,14 +57,17 @@ def procesar_fuente(fuente):
     for url_zip in enlaces_zip:
         mostrar_linea("Descargando", url_zip)
         registro = crear_registro_base(fuente, url_zip)
-        resultado_descarga = descargar_archivo_zip(url_zip)
+        resultado_descarga = descargar_archivo_zip(url_zip, carpeta_origen)
         registro["ruta_zip_descargado"] = str(resultado_descarga["ruta_archivo"])
         registro["estado_descarga"] = resultado_descarga["estado"]
         registro["detalle"] = resultado_descarga["detalle"]
 
         if resultado_descarga["estado"] == "descargado":
             mostrar_linea("Descomprimiendo", resultado_descarga["ruta_archivo"])
-            resultado_descompresion = descomprimir_zip(resultado_descarga["ruta_archivo"])
+            resultado_descompresion = descomprimir_zip(
+                resultado_descarga["ruta_archivo"],
+                carpeta_origen,
+            )
             registro["estado_descompresion"] = resultado_descompresion["estado"]
             registro["ruta_descompresion"] = str(resultado_descompresion["carpeta"])
             registro["detalle"] = resultado_descompresion["detalle"]

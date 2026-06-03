@@ -56,10 +56,13 @@ def obtener_nombre_archivo(url):
     return nombre if nombre else "archivo.zip"
 
 
-def descargar_archivo_zip(url):
-    CARPETA_DESCARGAS.mkdir(parents=True, exist_ok=True)
+def descargar_archivo_zip(url, carpeta_origen=""):
+    carpeta_descarga = (
+        CARPETA_DESCARGAS / carpeta_origen if carpeta_origen else CARPETA_DESCARGAS
+    )
+    carpeta_descarga.mkdir(parents=True, exist_ok=True)
     nombre_archivo = obtener_nombre_archivo(url)
-    ruta_archivo = CARPETA_DESCARGAS / nombre_archivo
+    ruta_archivo = carpeta_descarga / nombre_archivo
 
     try:
         with abrir_url(url) as respuesta:

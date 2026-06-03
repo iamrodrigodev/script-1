@@ -4,13 +4,16 @@ from zipfile import BadZipFile, ZipFile
 from configuracion import CARPETA_EXTRAIDOS
 
 
-def obtener_carpeta_destino(ruta_zip):
+def obtener_carpeta_destino(ruta_zip, carpeta_origen=""):
     nombre_carpeta = Path(ruta_zip).stem
-    return CARPETA_EXTRAIDOS / nombre_carpeta
+    carpeta_base = (
+        CARPETA_EXTRAIDOS / carpeta_origen if carpeta_origen else CARPETA_EXTRAIDOS
+    )
+    return carpeta_base / nombre_carpeta
 
 
-def descomprimir_zip(ruta_zip):
-    carpeta_destino = obtener_carpeta_destino(ruta_zip)
+def descomprimir_zip(ruta_zip, carpeta_origen=""):
+    carpeta_destino = obtener_carpeta_destino(ruta_zip, carpeta_origen)
     carpeta_destino.mkdir(parents=True, exist_ok=True)
 
     try:
