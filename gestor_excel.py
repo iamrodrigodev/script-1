@@ -42,6 +42,30 @@ def leer_fuentes_excel(ruta_excel):
     return fuentes
 
 
+def guardar_fuentes_excel(ruta_excel, fuentes):
+    crear_excel_entrada_si_no_existe(ruta_excel)
+    fuentes_actuales = leer_fuentes_excel(ruta_excel)
+    urls_actuales = {fuente["url"] for fuente in fuentes_actuales}
+    cantidad_guardada = 0
+
+    libro = load_workbook(ruta_excel)
+    hoja = libro.active
+
+    for fuente in fuentes:
+        if fuente["url"] in urls_actuales:
+            continue
+
+        hoja.append([
+            fuente["nombre"],
+            fuente["url"],
+        ])
+        urls_actuales.add(fuente["url"])
+        cantidad_guardada += 1
+
+    libro.save(ruta_excel)
+    return cantidad_guardada
+
+
 def guardar_bitacora(ruta_excel, registros):
     ruta_excel.parent.mkdir(parents=True, exist_ok=True)
     libro = Workbook()
