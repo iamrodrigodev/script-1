@@ -1,15 +1,18 @@
+ANCHO_SEPARADOR = 70
+
+
 def mostrar_titulo(texto):
     print("")
-    print("=" * 70)
+    print("=" * ANCHO_SEPARADOR)
     print(texto.upper())
-    print("=" * 70)
+    print("=" * ANCHO_SEPARADOR)
 
 
 def mostrar_tarea(numero, texto):
     print("")
-    print("-" * 70)
+    print("-" * ANCHO_SEPARADOR)
     print(f"TAREA {numero}: {texto}")
-    print("-" * 70)
+    print("-" * ANCHO_SEPARADOR)
 
 
 def mostrar_linea(etiqueta, valor):
