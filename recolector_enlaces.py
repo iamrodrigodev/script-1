@@ -12,8 +12,10 @@ def obtener_nombre_desde_url(url):
     return nombre if nombre else "archivo.zip"
 
 
-def crear_fuentes_desde_url(url):
-    enlaces_zip = obtener_enlaces_zip(url)
+def crear_fuentes_desde_url(url, enlaces_zip=None):
+    if enlaces_zip is None:
+        enlaces_zip = obtener_enlaces_zip(url)
+
     fuentes = []
 
     for enlace_zip in enlaces_zip:
