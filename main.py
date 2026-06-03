@@ -1,7 +1,13 @@
-from configuracion import RUTA_BITACORA, RUTA_EXCEL_ENTRADA
+from configuracion import RUTA_BITACORA, RUTA_EXCEL_ENTRADA, URL_PAGINA_ZIPS
 from descargador import descargar_archivo_zip, obtener_enlaces_zip
 from descompresor import descomprimir_zip
-from gestor_excel import crear_excel_entrada_si_no_existe, guardar_bitacora, leer_fuentes_excel
+from gestor_excel import (
+    crear_excel_entrada_si_no_existe,
+    guardar_bitacora,
+    guardar_fuentes_excel,
+    leer_fuentes_excel,
+)
+from recolector_enlaces import crear_fuentes_desde_url
 
 
 def procesar_fuente(fuente):
@@ -64,6 +70,13 @@ def procesar_fuente(fuente):
 
 def ejecutar():
     crear_excel_entrada_si_no_existe(RUTA_EXCEL_ENTRADA)
+
+    if URL_PAGINA_ZIPS:
+        fuentes_recolectadas = crear_fuentes_desde_url(URL_PAGINA_ZIPS)
+        cantidad_guardada = guardar_fuentes_excel(RUTA_EXCEL_ENTRADA, fuentes_recolectadas)
+        print(f"Se encontraron {len(fuentes_recolectadas)} enlaces zip.")
+        print(f"Se agregaron {cantidad_guardada} enlaces nuevos al Excel.")
+
     fuentes = leer_fuentes_excel(RUTA_EXCEL_ENTRADA)
     bitacora = []
 
