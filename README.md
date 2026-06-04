@@ -17,29 +17,97 @@ El envío de archivos XML por correo electrónico no forma parte de este prototi
 
 ## Flujo general
 
-```text
-URLs configuradas
-    |
-    v
-Validación de páginas candidatas
-    |
-    v
-Detección de enlaces ZIP
-    |
-    v
-Registro de enlaces en Excel
-    |
-    v
-Descarga de archivos ZIP
-    |
-    v
-Descompresión de archivos
-    |
-    v
-Generación de bitácora Excel
+```mermaid
+flowchart TD
+    A["Ejecutar python main.py"] --> B["Leer lista de URLs configuradas"]
+    B --> C{"¿Existen URLs?"}
+    C -- "No" --> Z["Finalizar sin procesar"]
+    C -- "Sí" --> D["Tomar siguiente URL"]
+
+    subgraph URL["Procesamiento independiente por URL"]
+        D --> J1["Job 1: Validar URL candidata"]
+        J1 --> V{"¿La URL contiene enlaces ZIP?"}
+        V -- "No" --> O["Informar motivo y omitir URL"]
+        V -- "Sí" --> J2["Job 2: Preparar Excel de entrada"]
+        J2 --> J3["Job 3: Registrar enlaces ZIP en Excel"]
+        J3 --> J4["Job 4: Descargar y descomprimir ZIPs"]
+        J4 --> J5["Job 5: Generar bitácora Excel"]
+    end
+
+    O --> S{"¿Quedan URLs?"}
+    J5 --> S
+    S -- "Sí" --> D
+    S -- "No" --> F["Proceso terminado"]
 ```
 
 Cada URL se procesa de manera independiente. Sus archivos de entrada, descargas, extracciones y bitácoras se almacenan en carpetas separadas para evitar cruces y sobrescrituras.
+
+## Ejecución por jobs
+
+`main.py` inicia el proceso una sola vez. Después, `tareas.py` recorre cada URL configurada y ejecuta cinco jobs en orden.
+
+| Job | Entrada | Acción | Salida |
+|---|---|---|---|
+| 1. Validar URL | URL configurada | Valida formato, acceso y existencia de enlaces ZIP. | URL candidata o URL omitida. |
+| 2. Preparar Excel | Carpeta identificada para la URL | Crea o recupera el Excel acumulado. | `input/<pagina-origen>/zips.xlsx` |
+| 3. Registrar enlaces | Enlaces ZIP detectados | Agrega enlaces nuevos sin duplicar registros. | Excel actualizado. |
+| 4. Descargar y descomprimir | Registros del Excel | Descarga cada ZIP y extrae su contenido. | Carpetas `downloads/` y `extracted/`. |
+| 5. Generar bitácora | Resultado de cada archivo | Registra estados, rutas y errores. | `output/<pagina-origen>/bitacora.xlsx` |
+
+```mermaid
+sequenceDiagram
+    participant Usuario
+    participant Main as main.py
+    participant Tareas as tareas.py
+    participant Validador as validador_urls.py
+    participant Recolector as recolector_enlaces.py
+    participant Excel as gestor_excel.py
+    participant Procesador as procesador_zips.py
+    participant Descargador as descargador.py
+    participant Extractor as descompresor.py
+
+    Usuario->>Main: python main.py
+    Main->>Tareas: ejecutar_tareas()
+
+    loop Por cada URL configurada
+        Tareas->>Validador: validar_url_pagina_zips(url)
+        Validador-->>Tareas: candidata y enlaces ZIP
+
+        alt URL no candidata
+            Tareas-->>Usuario: Mostrar motivo y omitir URL
+        else URL candidata
+            Tareas->>Excel: Crear o recuperar zips.xlsx
+            Tareas->>Recolector: Crear registros desde enlaces ZIP
+            Recolector->>Excel: Guardar enlaces nuevos
+
+            loop Por cada ZIP registrado
+                Tareas->>Procesador: procesar_fuente(fuente)
+                Procesador->>Descargador: descargar_archivo_zip()
+                Descargador-->>Procesador: Estado y ruta del ZIP
+                Procesador->>Extractor: descomprimir_zip()
+                Extractor-->>Procesador: Estado y ruta extraída
+            end
+
+            Tareas->>Excel: Guardar bitácora final
+            Tareas-->>Usuario: Mostrar resumen de la URL
+        end
+    end
+```
+
+## Separación de información por URL
+
+Cada URL genera el mismo nombre de carpeta en las distintas etapas:
+
+```mermaid
+flowchart LR
+    U["URL configurada"] --> N["Nombre de carpeta normalizado"]
+    N --> I["input/<pagina-origen>/zips.xlsx"]
+    N --> D["downloads/<pagina-origen>/"]
+    N --> E["extracted/<pagina-origen>/"]
+    N --> B["output/<pagina-origen>/bitacora.xlsx"]
+```
+
+Esta separación permite ejecutar varias páginas dentro del mismo proceso sin mezclar facturas, descargas, extracciones o bitácoras.
 
 ## Estructura del proyecto
 
